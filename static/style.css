@@ -1,37 +1,273 @@
-/* This is intentionally bare. The look, font, spacing, and accessibility
-   choices (dyslexia-friendly font, contrast, simplicity) are yours to design
-   in Phase 3 - this is just enough so the forms are readable while you test. */
-
-body {
-    font-family: sans-serif;
-    max-width: 700px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-    line-height: 1.5;
+/* ============================================
+   FONTS - self-hosted, zero internet dependency.
+   Matches the local-first philosophy of the
+   whole project: this should never break just
+   because the salon's wifi hiccups.
+   ============================================ */
+@font-face {
+    font-family: 'Atkinson Hyperlegible';
+    src: url('fonts/AtkinsonHyperlegible-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Atkinson Hyperlegible';
+    src: url('fonts/AtkinsonHyperlegible-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
 }
 
-label {
-    display: block;
-    margin-bottom: 1rem;
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('fonts/OpenDyslexic-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('fonts/OpenDyslexic-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
 }
 
-input, textarea {
-    width: 100%;
-    padding: 0.5rem;
-    margin-top: 0.25rem;
-    font-size: 1rem;
+/* ============================================
+   DESIGN TOKENS - change a value here and it
+   ripples through the whole app. Warm dark
+   palette, not pure black/white - easier on
+   the eyes over a long day at the chair.
+   ============================================ */
+:root {
+    --color-bg: #181613;
+    --color-surface: #221f1b;
+    --color-surface-raised: #2b2723;
+    --color-border: rgba(255, 255, 255, 0.07);
+    --color-text: #ece7df;
+    --color-text-muted: #a39a8c;
+    --color-accent: #c98a4b;
+    --color-accent-hover: #dba066;
+    --color-accent-text: #181613;
+
+    --radius: 16px;
+    --shadow-card: 0 6px 20px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.75rem;
+}
+
+/* ============================================
+   RESET + BASE TYPOGRAPHY
+   ============================================ */
+* {
     box-sizing: border-box;
 }
 
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    margin: 0;
+    padding: 0;
+}
+
+/* Toggled by app.js. Higher specificity than the rule above, so it wins
+   without needing !important. Everything else (inputs, textareas, buttons)
+   inherits font-family, so this one switch changes the whole page. */
+body.font-opendyslexic {
+    font-family: 'OpenDyslexic', sans-serif;
+    letter-spacing: 0; /* OpenDyslexic already has wide spacing built in */
+}
+
+h1, h2, h3 {
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+a {
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--color-accent-hover);
+    text-decoration: underline;
+}
+
+/* ============================================
+   LAYOUT
+   display: flex turns an element into a flex
+   container. align-items controls the cross
+   axis (vertical centering, here). This is the
+   same Flexbox you're learning in freeCodeCamp -
+   just applied to a real page.
+   ============================================ */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+}
+
+header a {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+#font-toggle {
+    background-color: transparent;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+#font-toggle:hover {
+    background-color: var(--color-surface-raised);
+    color: var(--color-text);
+}
+
+main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: var(--space-lg);
+}
+
+/* ============================================
+   CARDS - the "tactile" surfaces. Every distinct
+   chunk of content lives in one of these instead
+   of floating loose on bare background.
+   ============================================ */
+.card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
+}
+
+/* ============================================
+   FORMS
+   ============================================ */
+label {
+    display: block;
+    margin-bottom: var(--space-md);
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+textarea {
+    width: 100%;
+    margin-top: var(--space-sm);
+    padding: 0.65rem;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: calc(var(--radius) - 4px);
+    color: var(--color-text);
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+textarea {
+    min-height: 5rem;
+    resize: vertical;
+}
+
+button {
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+    border: none;
+    border-radius: calc(var(--radius) - 4px);
+    padding: 0.75rem 1.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--color-accent-hover);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+/* ============================================
+   CHECKBOX GROUP - the formula type selector.
+   flex-wrap lets pills wrap to a new line on
+   narrow screens. gap spaces them evenly
+   without margin hacks on each one.
+   ============================================ */
 fieldset {
-    margin-bottom: 1rem;
+    border: none;
+    padding: 0;
+    margin: 0 0 var(--space-md) 0;
 }
 
-fieldset label {
-    display: inline-block;
-    margin-right: 1rem;
+fieldset legend {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    margin-bottom: var(--space-sm);
+    padding: 0;
 }
 
-fieldset input {
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0;
+    background-color: var(--color-surface-raised);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
     width: auto;
+}
+
+.checkbox-group input {
+    width: auto;
+    margin: 0;
+}
+
+/* ============================================
+   LISTS - client list, formula history
+   ============================================ */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul li {
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--color-border);
+}
+
+ul li:last-child {
+    border-bottom: none;
 }

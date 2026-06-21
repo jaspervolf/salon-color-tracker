@@ -9,9 +9,11 @@
 <body>
     <header>
         <a href="{{ url_for('index') }}">Salon Color Tracker</a>
+        <button id="font-toggle" type="button">Font: Atkinson Hyperlegible</button>
     </header>
     <main>
         {% block content %}{% endblock %}
     </main>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

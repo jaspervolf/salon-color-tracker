@@ -2,6 +2,7 @@
 {% block title %}{% if client %}Edit Client{% else %}New Client{% endif %}{% endblock %}
 {% block content %}
 <h1>{% if client %}Edit Client{% else %}New Client{% endif %}</h1>
+<div class="card">
 <form method="POST">
     <label>Name
         <input type="text" name="name" value="{{ client['name'] if client else '' }}" required>
@@ -23,4 +24,5 @@
     </label>
     <button type="submit">Save</button>
 </form>
+</div>
 {% endblock %}

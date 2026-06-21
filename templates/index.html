@@ -3,11 +3,13 @@
 {% block content %}
 <h1>Clients</h1>
 <a href="{{ url_for('client_new') }}">+ New Client</a>
-<ul>
-    {% for client in clients %}
-    <li><a href="{{ url_for('client_profile', client_id=client['id']) }}">{{ client['name'] }}</a></li>
-    {% else %}
-    <li>No clients yet.</li>
-    {% endfor %}
-</ul>
+<div class="card">
+    <ul>
+        {% for client in clients %}
+        <li><a href="{{ url_for('client_profile', client_id=client['id']) }}">{{ client['name'] }}</a></li>
+        {% else %}
+        <li>No clients yet.</li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}

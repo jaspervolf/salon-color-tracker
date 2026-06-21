@@ -2,6 +2,7 @@
 {% block title %}{% if formula %}Edit Formula{% else %}New Formula{% endif %}{% endblock %}
 {% block content %}
 <h1>{% if formula %}Edit Formula{% else %}New Formula{% endif %}</h1>
+<div class="card">
 <form method="POST">
     <label>Consultation Notes (starting point &amp; desired result)
         <textarea name="consultation_notes">{{ formula['consultation_notes'] if formula else '' }}</textarea>
@@ -16,10 +17,12 @@
 
     <fieldset>
         <legend>Type</legend>
-        <label><input type="checkbox" name="is_lightener" {% if formula and formula['is_lightener'] %}checked{% endif %}> Lightener</label>
-        <label><input type="checkbox" name="is_permanent" {% if formula and formula['is_permanent'] %}checked{% endif %}> Permanent</label>
-        <label><input type="checkbox" name="is_demi_permanent" {% if formula and formula['is_demi_permanent'] %}checked{% endif %}> Demi-Permanent</label>
-        <label><input type="checkbox" name="is_deposit_only" {% if formula and formula['is_deposit_only'] %}checked{% endif %}> Deposit Only</label>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="is_lightener" {% if formula and formula['is_lightener'] %}checked{% endif %}> Lightener</label>
+            <label><input type="checkbox" name="is_permanent" {% if formula and formula['is_permanent'] %}checked{% endif %}> Permanent</label>
+            <label><input type="checkbox" name="is_demi_permanent" {% if formula and formula['is_demi_permanent'] %}checked{% endif %}> Demi-Permanent</label>
+            <label><input type="checkbox" name="is_deposit_only" {% if formula and formula['is_deposit_only'] %}checked{% endif %}> Deposit Only</label>
+        </div>
     </fieldset>
 
     <label>Formula
@@ -41,4 +44,5 @@
 {% if formula %}
 <p><small>Created {{ formula['created_date'] }} &middot; Last edited {{ formula['last_edited_date'] }}</small></p>
 {% endif %}
+</div>
 {% endblock %}

@@ -1,40 +1,65 @@
 {% extends 'base.html' %}
-{% block title %}{% if formula %}Edit Formula{% else %}New Formula{% endif %}{% endblock %}
+{% block title %}{% if formula %}Edit Formulation{% else %}New Formulation{% endif %}{% endblock %}
 {% block content %}
-<h1>{% if formula %}Edit Formula{% else %}New Formula{% endif %}</h1>
+<h1>{% if formula %}Edit Formulation{% else %}New Formulation{% endif %}</h1>
 <div class="card">
 <form method="POST">
-    <label>Consultation Notes (starting point &amp; desired result)
+    <label>Consultation Results
         <textarea name="consultation_notes">{{ formula['consultation_notes'] if formula else '' }}</textarea>
     </label>
 
-    <label>Brand
-        <input type="text" name="brand" value="{{ formula['brand'] if formula else '' }}">
-    </label>
-    <label>Line
-        <input type="text" name="line" value="{{ formula['line'] if formula else '' }}">
-    </label>
+    <!-- One or more formulation mixes for this appointment (e.g. a root
+         formula plus a separate gloss). add-mix/remove-mix are wired up
+         in app.js; mix-template below is what gets cloned for new boxes. -->
+    <div id="mixes" data-next-index="{{ mixes|length }}">
+        {% for mix in mixes %}
+        {% set i = loop.index0 %}
+        <div class="formula-mix" data-index="{{ i }}">
+            <div class="mix-header">
+                <h3 class="mix-label">Formulation {{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[i] }}</h3>
+                <button type="button" class="remove-mix" {% if mixes|length <= 1 %}style="display:none;"{% endif %}>Remove</button>
+            </div>
 
-    <fieldset>
-        <legend>Type</legend>
-        <div class="checkbox-group">
-            <label><input type="checkbox" name="is_lightener" {% if formula and formula['is_lightener'] %}checked{% endif %}> Lightener</label>
-            <label><input type="checkbox" name="is_permanent" {% if formula and formula['is_permanent'] %}checked{% endif %}> Permanent</label>
-            <label><input type="checkbox" name="is_demi_permanent" {% if formula and formula['is_demi_permanent'] %}checked{% endif %}> Demi-Permanent</label>
-            <label><input type="checkbox" name="is_deposit_only" {% if formula and formula['is_deposit_only'] %}checked{% endif %}> Deposit Only</label>
+            <label>Color House &amp; Series
+                <input type="text" name="mix_{{ i }}_color_house_series" value="{{ mix['color_house_series'] if mix else '' }}" placeholder="e.g. Wella Koleston">
+            </label>
+
+            <fieldset>
+                <legend>Classification</legend>
+                <div class="pill-group">
+                    <label><input type="checkbox" name="mix_{{ i }}_is_lightener" {% if mix and mix['is_lightener'] %}checked{% endif %}> Lightener</label>
+                    <label><input type="checkbox" name="mix_{{ i }}_is_permanent" {% if mix and mix['is_permanent'] %}checked{% endif %}> Permanent</label>
+                    <label><input type="checkbox" name="mix_{{ i }}_is_demi_permanent" {% if mix and mix['is_demi_permanent'] %}checked{% endif %}> Demi-Permanent</label>
+                    <label><input type="checkbox" name="mix_{{ i }}_is_deposit_only" {% if mix and mix['is_deposit_only'] %}checked{% endif %}> Deposit Only</label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Developer</legend>
+                <div class="pill-group">
+                    {% for vol in [5, 10, 15, 20, 25, 30, 40] %}
+                    <label><input type="checkbox" name="mix_{{ i }}_dev_{{ vol }}" {% if mix and mix['dev_' ~ vol] %}checked{% endif %}> {{ vol }}</label>
+                    {% endfor %}
+                </div>
+            </fieldset>
+
+            <label>Formula
+                <textarea name="mix_{{ i }}_mix_details">{{ mix['mix_details'] if mix else '' }}</textarea>
+            </label>
+
+            <label>Development Time
+                <input type="text" name="mix_{{ i }}_development_time" value="{{ mix['development_time'] if mix else '' }}">
+            </label>
         </div>
-    </fieldset>
+        {% endfor %}
+    </div>
 
-    <label>Formula
-        <textarea name="formula_details">{{ formula['formula_details'] if formula else '' }}</textarea>
-    </label>
-    <label>Developer
-        <input type="text" name="developer" value="{{ formula['developer'] if formula else '' }}">
-    </label>
-    <label>Processing Time
-        <input type="text" name="processing_time" value="{{ formula['processing_time'] if formula else '' }}">
-    </label>
-    <label>Results / Notes
+    <input type="hidden" id="mix-indices" name="mix_indices"
+           value="{% for mix in mixes %}{{ loop.index0 }}{% if not loop.last %},{% endif %}{% endfor %}">
+
+    <button type="button" id="add-mix" class="secondary-button">+ Add Formulation</button>
+
+    <label>Visual Outcome
         <textarea name="results_notes">{{ formula['results_notes'] if formula else '' }}</textarea>
     </label>
 
@@ -45,4 +70,51 @@
 <p><small>Created {{ formula['created_date'] }} &middot; Last edited {{ formula['last_edited_date'] }}</small></p>
 {% endif %}
 </div>
+
+<!-- Blank template for JS to clone when "+ Add Formulation" is clicked.
+     __INDEX__ gets replaced with a real index by app.js before the
+     fields are usable - see the formulation-mix section of app.js. -->
+<template id="mix-template">
+    <div class="formula-mix" data-index="__INDEX__">
+        <div class="mix-header">
+            <h3 class="mix-label">Formulation</h3>
+            <button type="button" class="remove-mix">Remove</button>
+        </div>
+
+        <label>Color House &amp; Series
+            <input type="text" data-name="mix___INDEX___color_house_series" placeholder="e.g. Wella Koleston">
+        </label>
+
+        <fieldset>
+            <legend>Classification</legend>
+            <div class="pill-group">
+                <label><input type="checkbox" data-name="mix___INDEX___is_lightener"> Lightener</label>
+                <label><input type="checkbox" data-name="mix___INDEX___is_permanent"> Permanent</label>
+                <label><input type="checkbox" data-name="mix___INDEX___is_demi_permanent"> Demi-Permanent</label>
+                <label><input type="checkbox" data-name="mix___INDEX___is_deposit_only"> Deposit Only</label>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Developer</legend>
+            <div class="pill-group">
+                <label><input type="checkbox" data-name="mix___INDEX___dev_5"> 5</label>
+                <label><input type="checkbox" data-name="mix___INDEX___dev_10"> 10</label>
+                <label><input type="checkbox" data-name="mix___INDEX___dev_15"> 15</label>
+                <label><input type="checkbox" data-name="mix___INDEX___dev_20"> 20</label>
+                <label><input type="checkbox" data-name="mix___INDEX___dev_25"> 25</label>
+                <label><input type="checkbox" data-name="mix___INDEX___dev_30"> 30</label>
+                <label><input type="checkbox" data-name="mix___INDEX___dev_40"> 40</label>
+            </div>
+        </fieldset>
+
+        <label>Formula
+            <textarea data-name="mix___INDEX___mix_details"></textarea>
+        </label>
+
+        <label>Development Time
+            <input type="text" data-name="mix___INDEX___development_time">
+        </label>
+    </div>
+</template>
 {% endblock %}

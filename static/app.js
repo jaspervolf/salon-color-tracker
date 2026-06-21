@@ -29,3 +29,103 @@ toggleBtn.addEventListener('click', function () {
     localStorage.setItem(FONT_KEY, next);
     applyFont(next);
 });
+
+
+// ============================================
+// PHONE NUMBER FORMATTING
+// Reformats digits into 000-000-0000 as the
+// stylist types, on the client form's phone
+// field only.
+// ============================================
+const phoneInput = document.getElementById('phone');
+
+if (phoneInput) {
+    phoneInput.addEventListener('input', function () {
+        // \D matches any non-digit character; replacing it with '' strips
+        // anything that isn't 0-9, so pasted text like "(803) 445-5192"
+        // still formats correctly. slice(0, 10) caps it at 10 digits.
+        const digits = phoneInput.value.replace(/\D/g, '').slice(0, 10);
+
+        let formatted = digits;
+        if (digits.length > 6) {
+            formatted = digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6);
+        } else if (digits.length > 3) {
+            formatted = digits.slice(0, 3) + '-' + digits.slice(3);
+        }
+        phoneInput.value = formatted;
+    });
+}
+
+
+// ============================================
+// FORMULATION MIX BOXES
+// Lets a stylist add more than one formulation
+// to a single appointment (e.g. a root formula
+// plus a separate gloss), each with its own
+// classification, developer, recipe, and
+// development time. Only runs on the
+// new/edit formulation page.
+// ============================================
+(function () {
+    const container = document.getElementById('mixes');
+    const addBtn = document.getElementById('add-mix');
+    const indicesInput = document.getElementById('mix-indices');
+    const template = document.getElementById('mix-template');
+
+    if (!container || !addBtn || !indicesInput || !template) {
+        return; // not on the formulation form - nothing to wire up
+    }
+
+    // Indices are never reused, even after a box is removed, so two boxes
+    // can never accidentally share field names.
+    let nextIndex = parseInt(container.dataset.nextIndex, 10);
+
+    function relabelAndSync() {
+        const boxes = container.querySelectorAll('.formula-mix');
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        boxes.forEach(function (box, position) {
+            box.querySelector('.mix-label').textContent = 'Formulation ' + letters[position];
+            const removeBtn = box.querySelector('.remove-mix');
+            // Always allow removing down to 1 box, never to 0
+            removeBtn.style.display = boxes.length > 1 ? '' : 'none';
+        });
+
+        // Keep the hidden mix_indices field in sync with whatever boxes
+        // currently exist, so the backend knows exactly which mix_N_*
+        // fields to read on submit.
+        const liveIndices = Array.from(boxes).map(function (box) {
+            return box.dataset.index;
+        });
+        indicesInput.value = liveIndices.join(',');
+    }
+
+    addBtn.addEventListener('click', function () {
+        const fragment = template.content.cloneNode(true);
+        const box = fragment.querySelector('.formula-mix');
+        box.dataset.index = nextIndex;
+
+        // Every field in the template has data-name="mix___INDEX___foo"
+        // instead of a real name attribute (a name this early would let
+        // an empty, unused box accidentally get submitted as index 0).
+        // Swap in the real index now that this box is actually being used.
+        fragment.querySelectorAll('[data-name]').forEach(function (field) {
+            field.name = field.dataset.name.replace('__INDEX__', nextIndex);
+        });
+
+        container.appendChild(fragment);
+        nextIndex++;
+        relabelAndSync();
+    });
+
+    // One listener on the container instead of one per remove button -
+    // this also automatically covers boxes added later via cloning.
+    container.addEventListener('click', function (event) {
+        if (event.target.classList.contains('remove-mix')) {
+            event.target.closest('.formula-mix').remove();
+            relabelAndSync();
+        }
+    });
+
+    relabelAndSync();
+})();

@@ -14,7 +14,7 @@
         <input type="email" name="email" value="{{ client['email'] if client else '' }}">
     </label>
     <label>Phone
-        <input type="text" name="phone" value="{{ client['phone'] if client else '' }}">
+        <input type="text" name="phone" id="phone" value="{{ client['phone'] if client else '' }}" placeholder="000-000-0000">
     </label>
     <label>Birthday
         <input type="date" name="birthday" value="{{ client['birthday'] if client else '' }}">

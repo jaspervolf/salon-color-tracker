@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}{{ client['name'] }}{% endblock %}
+{% block content %}
+<h1>{{ client['name'] }}</h1>
+<p>{{ client['phone'] }} &middot; {{ client['email'] }}</p>
+<p>{{ client['address'] }}</p>
+<p>Birthday: {{ client['birthday'] }}</p>
+<p>Availability notes: {{ client['availability_notes'] }}</p>
+<a href="{{ url_for('client_edit', client_id=client['id']) }}">Edit client info</a>
+
+<h2>Formula History</h2>
+<a href="{{ url_for('formula_new', client_id=client['id']) }}">+ New Formula</a>
+<ul>
+    {% for formula in formulas %}
+    <li>
+        <strong>{{ formula['created_date'] }}</strong>
+        {% if formula['last_edited_date'] != formula['created_date'] %}
+            (edited {{ formula['last_edited_date'] }})
+        {% endif %}
+        &mdash; {{ formula['brand'] }} {{ formula['line'] }}
+        &mdash; <a href="{{ url_for('formula_edit', formula_id=formula['id']) }}">view / edit</a>
+    </li>
+    {% else %}
+    <li>No formulas recorded yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

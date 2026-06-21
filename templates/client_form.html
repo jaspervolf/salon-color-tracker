@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}{% if client %}Edit Client{% else %}New Client{% endif %}{% endblock %}
+{% block content %}
+<h1>{% if client %}Edit Client{% else %}New Client{% endif %}</h1>
+<form method="POST">
+    <label>Name
+        <input type="text" name="name" value="{{ client['name'] if client else '' }}" required>
+    </label>
+    <label>Address
+        <input type="text" name="address" value="{{ client['address'] if client else '' }}">
+    </label>
+    <label>Email
+        <input type="email" name="email" value="{{ client['email'] if client else '' }}">
+    </label>
+    <label>Phone
+        <input type="text" name="phone" value="{{ client['phone'] if client else '' }}">
+    </label>
+    <label>Birthday
+        <input type="date" name="birthday" value="{{ client['birthday'] if client else '' }}">
+    </label>
+    <label>Availability Notes
+        <textarea name="availability_notes">{{ client['availability_notes'] if client else '' }}</textarea>
+    </label>
+    <button type="submit">Save</button>
+</form>
+{% endblock %}

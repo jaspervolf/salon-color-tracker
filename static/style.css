@@ -1,0 +1,37 @@
+/* This is intentionally bare. The look, font, spacing, and accessibility
+   choices (dyslexia-friendly font, contrast, simplicity) are yours to design
+   in Phase 3 - this is just enough so the forms are readable while you test. */
+
+body {
+    font-family: sans-serif;
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    line-height: 1.5;
+}
+
+label {
+    display: block;
+    margin-bottom: 1rem;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.25rem;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+fieldset {
+    margin-bottom: 1rem;
+}
+
+fieldset label {
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+fieldset input {
+    width: auto;
+}

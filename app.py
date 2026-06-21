@@ -217,4 +217,10 @@ def formula_edit(formula_id):
 
 if __name__ == '__main__':
     init_db()
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Debug mode is off by default - it's meant for active development
+    # (auto-reload on code changes, the interactive debugger), not for
+    # something running unattended on a network all day. Turn it on
+    # explicitly when you're actively working on the code:
+    #   GNUANCE_DEBUG=1 python3 app.py
+    debug_mode = os.environ.get('GNUANCE_DEBUG') == '1'
+    app.run(host='0.0.0.0', port=5000, debug=debug_mode)

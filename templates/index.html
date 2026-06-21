@@ -4,12 +4,14 @@
 <h1>Clients</h1>
 <a href="{{ url_for('client_new') }}">+ New Client</a>
 <div class="card">
-    <ul>
+    <input type="text" id="client-search" placeholder="Search clients..." aria-label="Search clients" autocomplete="off">
+    <ul id="client-list">
         {% for client in clients %}
-        <li><a href="{{ url_for('client_profile', client_id=client['id']) }}">{{ client['name'] }}</a></li>
+        <li data-name="{{ client['name']|lower }}"><a href="{{ url_for('client_profile', client_id=client['id']) }}">{{ client['name'] }}</a></li>
         {% else %}
         <li>No clients yet.</li>
         {% endfor %}
     </ul>
+    <p id="no-results" style="display:none;">No matching clients.</p>
 </div>
 {% endblock %}

@@ -1,0 +1,23 @@
+# Wait for Flask to actually be answering before launching the browser.
+# systemd and the desktop session start in parallel on boot, so without
+# this the browser could try to load the page before the server is
+# ready and show a connection-refused error instead of the app.
+for i in $(seq 1 30); do
+    curl -s http://localhost:5000 > /dev/null && break
+    sleep 1
+done
+
+# Some Pi OS images install Chromium as "chromium-browser", others as
+# plain "chromium" - this works either way, whichever got installed.
+if command -v chromium-browser >/dev/null 2>&1; then
+    BROWSER_BIN=chromium-browser
+else
+    BROWSER_BIN=chromium
+fi
+
+# --incognito means no saved session to restore and no "Chromium didn't
+# shut down correctly" prompt after a hard power-off, which is how this
+# will usually get turned off at the end of the day.
+"$BROWSER_BIN" --kiosk --noerrdialogs --disable-infobars --no-first-run \
+    --incognito --disable-session-crashed-bubble --password-store=basic \
+    http://localhost:5000 &

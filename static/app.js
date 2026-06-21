@@ -58,6 +58,42 @@ if (phoneInput) {
 
 
 // ============================================
+// CLIENT SEARCH
+// Filters the client list as you type. Pure
+// client-side - no server round-trip needed,
+// since a single salon's client list is small
+// enough to filter instantly in the browser.
+// Only runs on the home page.
+// ============================================
+(function () {
+    const searchInput = document.getElementById('client-search');
+    const noResults = document.getElementById('no-results');
+
+    if (!searchInput) {
+        return; // not on the client list page - nothing to wire up
+    }
+
+    const clientItems = document.querySelectorAll('#client-list li[data-name]');
+
+    searchInput.addEventListener('input', function () {
+        const query = searchInput.value.trim().toLowerCase();
+        let anyVisible = false;
+
+        clientItems.forEach(function (li) {
+            const matches = li.dataset.name.includes(query);
+            li.style.display = matches ? '' : 'none';
+            if (matches) {
+                anyVisible = true;
+            }
+        });
+
+        if (noResults) {
+            noResults.style.display = (query && !anyVisible) ? '' : 'none';
+        }
+    });
+})();
+
+// ============================================
 // FORMULATION MIX BOXES
 // Lets a stylist add more than one formulation
 // to a single appointment (e.g. a root formula

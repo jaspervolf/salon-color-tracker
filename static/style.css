@@ -216,6 +216,10 @@ input:focus, textarea:focus {
     border-color: var(--color-accent);
 }
 
+#client-search {
+    margin-bottom: var(--space-md);
+}
+
 textarea {
     min-height: 5rem;
     resize: vertical;

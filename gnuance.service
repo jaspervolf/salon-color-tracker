@@ -1,0 +1,14 @@
+[Unit]
+Description=Gnuance salon color tracker
+After=network.target
+
+[Service]
+Type=simple
+User=jcsvolf
+WorkingDirectory=/home/jcsvolf/Projects/salon_tracker
+ExecStart=/usr/bin/python3 /home/jcsvolf/Projects/salon_tracker/app.py
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}{% if is_edit %}Edit Appointment{% else %}New Appointment{% endif %}{% endblock %}
+{% block content %}
+<h1>{% if is_edit %}Edit Appointment{% else %}New Appointment{% endif %}</h1>
+<div class="card">
+    {% if error %}
+    <p class="form-error">{{ error }}</p>
+    {% endif %}
+    <form method="POST">
+        <label>Client
+            <select name="client_id" required>
+                {% for client in clients %}
+                <option value="{{ client['id'] }}" {% if prefill_client_id == client['id'] %}selected{% endif %}>{{ client['name'] }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Date
+            <input type="date" name="date" value="{{ prefill_date }}" required>
+        </label>
+
+        <label>Start Time
+            <input type="time" name="start_time" value="{{ prefill_start_time }}" required>
+        </label>
+
+        <label>Duration (minutes)
+            <input type="number" name="duration_minutes" value="{{ prefill_duration }}" min="5" step="5">
+        </label>
+
+        <label>Notes
+            <textarea name="notes">{{ prefill_notes }}</textarea>
+        </label>
+
+        <button type="submit">Save</button>
+    </form>
+</div>
+{% endblock %}

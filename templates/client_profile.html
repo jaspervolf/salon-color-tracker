@@ -10,6 +10,22 @@
     <a href="{{ url_for('client_edit', client_id=client['id']) }}">Edit client info</a>
 </div>
 
+<h2>Upcoming Appointments</h2>
+<a href="{{ url_for('appointment_new', client_id=client['id']) }}">+ New Appointment</a>
+<div class="card">
+    <ul>
+        {% for appt in appointments %}
+        <li>
+            {{ appt['date'] }} at {{ appt['start_time'] }}
+            {% if appt['notes'] %} &mdash; {{ appt['notes'] }}{% endif %}
+            &mdash; <a href="{{ url_for('appointment_edit', appointment_id=appt['id']) }}">edit</a>
+        </li>
+        {% else %}
+        <li>No upcoming appointments.</li>
+        {% endfor %}
+    </ul>
+</div>
+
 <h2>Formulation History</h2>
 <a href="{{ url_for('formula_new', client_id=client['id']) }}">+ New Formulation</a>
 <div class="card">

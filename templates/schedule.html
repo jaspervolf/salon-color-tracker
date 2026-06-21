@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Schedule{% endblock %}
+{% block content %}
+<h1>Schedule</h1>
+
+<div class="schedule-nav">
+    <a href="{{ url_for('schedule', date_str=prev_day) }}">&larr; Previous day</a>
+    <span>{{ display_date }}</span>
+    <a href="{{ url_for('schedule', date_str=next_day) }}">Next day &rarr;</a>
+</div>
+
+<a href="{{ url_for('appointment_new', date=date_str) }}">+ New Appointment</a>
+
+<div class="card">
+    <ul>
+        {% for appt in appointments %}
+        <li>
+            <strong>{{ appt['start_time'] }}</strong> &mdash;
+            <a href="{{ url_for('client_profile', client_id=appt['client_id']) }}">{{ appt['client_name'] }}</a>
+            {% if appt['notes'] %} &mdash; {{ appt['notes'] }}{% endif %}
+            <br>
+            {% if appt['formula_id'] %}
+                <a href="{{ url_for('formula_edit', formula_id=appt['formula_id']) }}">View logged visit</a>
+            {% else %}
+                <a href="{{ url_for('formula_new', client_id=appt['client_id'], appointment_id=appt['id']) }}">Log visit</a>
+            {% endif %}
+            &mdash;
+            <a href="{{ url_for('appointment_edit', appointment_id=appt['id']) }}">Edit</a>
+            &mdash;
+            <form method="POST" action="{{ url_for('appointment_delete', appointment_id=appt['id']) }}" class="inline-form">
+                <button type="submit" class="secondary-button" onclick="return confirm('Delete this appointment?')">Delete</button>
+            </form>
+        </li>
+        {% else %}
+        <li>No appointments scheduled for this day.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

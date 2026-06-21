@@ -10,15 +10,34 @@ CREATE TABLE IF NOT EXISTS clients (
     created_date TEXT NOT NULL
 );
 
+-- One row per scheduled appointment. Deliberately simple - no status
+-- field (scheduled/cancelled/no-show etc). If an appointment doesn't
+-- happen, you edit or delete it, same as everything else in this app.
+CREATE TABLE IF NOT EXISTS appointments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    client_id INTEGER NOT NULL,
+    date TEXT NOT NULL,              -- YYYY-MM-DD
+    start_time TEXT NOT NULL,        -- HH:MM, 24hr (sorts correctly as text)
+    duration_minutes INTEGER,
+    notes TEXT,                      -- what the visit is for
+    created_date TEXT NOT NULL,
+
+    FOREIGN KEY (client_id) REFERENCES clients (id)
+);
+
 -- One row per appointment/visit. Shared info for that visit -
 -- consultation and the overall visual outcome. Color house/series now
 -- lives per-formulation (see formula_mixes) since different mixes in
 -- the same visit can come from different lines.
 -- A client can have many over time (history), each independently editable.
 -- created_date is set once; last_edited_date updates every time it's saved.
+-- appointment_id is optional - set when a formulation was logged
+-- directly from the schedule (see the "Log visit" link), null when
+-- logged the old way via the client's profile page.
 CREATE TABLE IF NOT EXISTS formulas (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     client_id INTEGER NOT NULL,
+    appointment_id INTEGER,
     created_date TEXT NOT NULL,
     last_edited_date TEXT NOT NULL,
 
@@ -26,7 +45,8 @@ CREATE TABLE IF NOT EXISTS formulas (
 
     results_notes TEXT,        -- Visual Outcome + any client feedback
 
-    FOREIGN KEY (client_id) REFERENCES clients (id)
+    FOREIGN KEY (client_id) REFERENCES clients (id),
+    FOREIGN KEY (appointment_id) REFERENCES appointments (id)
 );
 
 -- One row per individual formulation mixed within a single appointment.

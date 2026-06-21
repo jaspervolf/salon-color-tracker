@@ -4,6 +4,7 @@
 <h1>{% if formula %}Edit Formulation{% else %}New Formulation{% endif %}</h1>
 <div class="card">
 <form method="POST">
+    <input type="hidden" name="appointment_id" value="{{ appointment_id or '' }}">
     <label>Consultation Results
         <textarea name="consultation_notes">{{ formula['consultation_notes'] if formula else '' }}</textarea>
     </label>

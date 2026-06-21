@@ -12,7 +12,13 @@
             <a href="{{ url_for('index') }}">Gnuance</a>
             <span class="tagline">Free as in Formulation</span>
         </div>
-        <button id="font-toggle" type="button">Font: Atkinson Hyperlegible</button>
+        <div class="header-actions">
+            <nav>
+                <a href="{{ url_for('index') }}">Clients</a>
+                <a href="{{ url_for('schedule') }}">Schedule</a>
+            </nav>
+            <button id="font-toggle" type="button">Font: Atkinson Hyperlegible</button>
+        </div>
     </header>
     <main>
         {% block content %}{% endblock %}

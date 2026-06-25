@@ -165,3 +165,38 @@ if (phoneInput) {
 
     relabelAndSync();
 })();
+
+
+// ============================================
+// FORMULATIONS SEARCH
+// Filters the formulations list as you type,
+// matching against client name, date, and the
+// consultation notes preview. Same pattern as
+// the client search above - pure client-side,
+// no server round-trip needed.
+// ============================================
+(function () {
+    const searchInput = document.getElementById('formulations-search');
+    const noResults   = document.getElementById('formulations-no-results');
+
+    if (!searchInput) {
+        return; // not on the formulations page - nothing to wire up
+    }
+
+    const items = document.querySelectorAll('#formulations-list li[data-search]');
+
+    searchInput.addEventListener('input', function () {
+        const query = searchInput.value.trim().toLowerCase();
+        let anyVisible = false;
+
+        items.forEach(function (li) {
+            const matches = !query || li.dataset.search.includes(query);
+            li.style.display = matches ? '' : 'none';
+            if (matches) anyVisible = true;
+        });
+
+        if (noResults) {
+            noResults.style.display = (query && !anyVisible) ? '' : 'none';
+        }
+    });
+})();

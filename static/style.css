@@ -413,3 +413,562 @@ ul li:last-child {
     padding: 0.3rem 0.7rem;
     font-size: 0.8rem;
 }
+
+/* ============================================
+   DISPENSARY - product shopping list
+   ============================================ */
+.dispensary-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.dispensary-actions {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.dispensary-add-form {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.dispensary-add-form h2 {
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.dispensary-add-row {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.dispensary-add-row .field-name {
+    flex: 2 1 200px;
+}
+
+.dispensary-add-row .field-qty {
+    flex: 0 1 90px;
+}
+
+.dispensary-add-row .field-unit {
+    flex: 0 1 110px;
+}
+
+.dispensary-add-row .field-notes {
+    flex: 3 1 200px;
+}
+
+.dispensary-add-row label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.dispensary-add-row input {
+    width: 100%;
+}
+
+.dispensary-add-row button {
+    flex-shrink: 0;
+    align-self: flex-end;
+    white-space: nowrap;
+}
+
+/* The list of items */
+.dispensary-list {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+}
+
+.dispensary-empty {
+    padding: var(--space-lg);
+    color: var(--color-text-muted);
+    text-align: center;
+    font-style: italic;
+}
+
+.dispensary-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.dispensary-item:last-child {
+    border-bottom: none;
+}
+
+.dispensary-item-info {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.dispensary-item-name {
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.dispensary-item-meta {
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    margin-top: 0.1rem;
+}
+
+.dispensary-item-controls {
+    display: flex;
+    gap: var(--space-sm);
+    flex-shrink: 0;
+}
+
+/* ============================================
+   PRINT - dispensary list only
+   ============================================ */
+@media print {
+    header,
+    .dispensary-header .dispensary-actions,
+    .dispensary-add-form,
+    .dispensary-item-controls,
+    #font-toggle {
+        display: none !important;
+    }
+
+    body {
+        background: #fff;
+        color: #000;
+        font-size: 14px;
+    }
+
+    .dispensary-list {
+        border: none;
+        box-shadow: none;
+    }
+
+    .dispensary-item {
+        border-bottom: 1px solid #ccc;
+        padding: 0.4rem 0;
+    }
+
+    .dispensary-item-name {
+        color: #000;
+    }
+
+    .dispensary-item-meta {
+        color: #555;
+    }
+
+    .dispensary-print-title {
+        display: block !important;
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Hidden outside of print */
+.dispensary-print-title {
+    display: none;
+}
+
+/* ============================================
+   DISPENSARY - product shopping list
+   ============================================ */
+.dispensary-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.dispensary-actions {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.dispensary-add-form {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.dispensary-add-form h2 {
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.dispensary-add-row {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.dispensary-add-row .field-name {
+    flex: 2 1 200px;
+}
+
+.dispensary-add-row .field-qty {
+    flex: 0 1 90px;
+}
+
+.dispensary-add-row .field-unit {
+    flex: 0 1 110px;
+}
+
+.dispensary-add-row .field-notes {
+    flex: 3 1 200px;
+}
+
+.dispensary-add-row label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.dispensary-add-row input {
+    width: 100%;
+}
+
+.dispensary-add-row button {
+    flex-shrink: 0;
+    align-self: flex-end;
+    white-space: nowrap;
+}
+
+.dispensary-list {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+}
+
+.dispensary-empty {
+    padding: var(--space-lg);
+    color: var(--color-text-muted);
+    text-align: center;
+    font-style: italic;
+}
+
+.dispensary-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.dispensary-item:last-child {
+    border-bottom: none;
+}
+
+.dispensary-item-info {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.dispensary-item-name {
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.dispensary-item-meta {
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    margin-top: 0.1rem;
+}
+
+.dispensary-item-controls {
+    display: flex;
+    gap: var(--space-sm);
+    flex-shrink: 0;
+}
+
+/* ============================================
+   PRINT - dispensary list only
+   ============================================ */
+@media print {
+    header,
+    .dispensary-header .dispensary-actions,
+    .dispensary-add-form,
+    .dispensary-item-controls,
+    #font-toggle {
+        display: none !important;
+    }
+
+    body {
+        background: #fff;
+        color: #000;
+        font-size: 14px;
+    }
+
+    .dispensary-list {
+        border: none;
+        box-shadow: none;
+    }
+
+    .dispensary-item {
+        border-bottom: 1px solid #ccc;
+        padding: 0.4rem 0;
+    }
+
+    .dispensary-item-name {
+        color: #000;
+    }
+
+    .dispensary-item-meta {
+        color: #555;
+    }
+
+    .dispensary-print-title {
+        display: block !important;
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+}
+
+.dispensary-print-title {
+    display: none;
+}
+
+/* ============================================
+   PAGE HEADER - back link + title row used on
+   client profile and formula form pages
+   ============================================ */
+.page-header {
+    margin-bottom: var(--space-lg);
+}
+
+.back-link {
+    display: inline-block;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    margin-bottom: var(--space-sm);
+}
+
+.back-link:hover {
+    color: var(--color-accent);
+}
+
+.page-header h1 {
+    margin: 0;
+}
+
+/* ============================================
+   CLIENT PROFILE - action links row
+   ============================================ */
+.profile-actions {
+    display: flex;
+    gap: var(--space-lg);
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border);
+    flex-wrap: wrap;
+}
+
+.profile-formulas-link {
+    color: var(--color-heading);
+    font-weight: 700;
+}
+
+.profile-formulas-link:hover {
+    color: var(--color-accent);
+}
+
+/* ============================================
+   FORMULATIONS LIST - all formulas page
+   ============================================ */
+.formula-list-item {
+    padding: var(--space-md) !important;
+}
+
+.formula-list-main {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.formula-list-date {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.formula-list-edited {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.formula-list-client {
+    margin-top: 0.15rem;
+    font-size: 0.95rem;
+    color: var(--color-heading);
+}
+
+.formula-list-preview {
+    margin-top: 0.2rem;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================================
+   CLIENT FORMULAS PAGE - latest formula full
+   view + history list
+   ============================================ */
+.cf-actions {
+    margin-bottom: var(--space-lg);
+}
+
+.cf-latest-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-md);
+    margin-bottom: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.cf-latest-header h2 {
+    margin: 0;
+}
+
+.cf-latest {
+    margin-bottom: var(--space-lg);
+}
+
+.cf-mix {
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.cf-mix:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.cf-mix h3 {
+    margin-top: 0;
+    margin-bottom: var(--space-sm);
+    font-size: 1rem;
+    color: var(--color-heading);
+}
+
+.cf-mix h4 {
+    margin: var(--space-sm) 0 0.25rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-text-muted);
+    font-weight: 400;
+}
+
+.cf-mix-house {
+    margin: 0 0 var(--space-sm);
+    font-weight: 700;
+}
+
+.cf-pills {
+    margin-bottom: var(--space-sm);
+}
+
+.cf-pill {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    background-color: var(--color-surface-raised);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    margin-right: 0.3rem;
+    margin-bottom: 0.3rem;
+}
+
+.cf-pill-dev {
+    color: var(--color-heading);
+    border-color: var(--color-heading-deep);
+}
+
+.cf-section {
+    margin: var(--space-sm) 0;
+}
+
+.cf-section h3 {
+    margin-top: 0;
+    margin-bottom: 0.25rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-text-muted);
+    font-weight: 400;
+}
+
+.cf-section p {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.cf-results {
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border);
+}
+
+.cf-dev-time {
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    margin: var(--space-sm) 0 0;
+}
+
+.cf-history-heading {
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-sm);
+}
+
+.cf-history-preview {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.cf-empty {
+    color: var(--color-text-muted);
+    font-style: italic;
+}

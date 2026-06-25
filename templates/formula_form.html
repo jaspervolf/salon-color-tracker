@@ -1,62 +1,121 @@
 {% extends 'base.html' %}
 {% block title %}{% if formula %}Edit Formulation{% else %}New Formulation{% endif %}{% endblock %}
 {% block content %}
-<h1>{% if formula %}Edit Formulation{% else %}New Formulation{% endif %}</h1>
+
+<div class="page-header">
+    <a href="{{ back }}" class="back-link">&larr; Back</a>
+    <h1>
+        {% if formula %}Edit Formulation{% else %}New Formulation{% endif %}
+        &mdash; {{ client['name'] }}
+    </h1>
+</div>
+
 <div class="card">
 <form method="POST">
     <input type="hidden" name="appointment_id" value="{{ appointment_id or '' }}">
-    <label>Consultation Results
+    <input type="hidden" name="back" value="{{ back }}">
+
+    <label>Consultation Notes
         <textarea name="consultation_notes">{{ formula['consultation_notes'] if formula else '' }}</textarea>
     </label>
 
     <!-- One or more formulation mixes for this appointment (e.g. a root
          formula plus a separate gloss). add-mix/remove-mix are wired up
          in app.js; mix-template below is what gets cloned for new boxes. -->
-    <div id="mixes" data-next-index="{{ mixes|length }}">
-        {% for mix in mixes %}
-        {% set i = loop.index0 %}
-        <div class="formula-mix" data-index="{{ i }}">
-            <div class="mix-header">
-                <h3 class="mix-label">Formulation {{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[i] }}</h3>
-                <button type="button" class="remove-mix" {% if mixes|length <= 1 %}style="display:none;"{% endif %}>Remove</button>
+    <div id="mixes" data-next-index="{{ [mixes|length, 1]|max }}">
+
+        {% if mixes %}
+            {% for mix in mixes %}
+            {% set i = loop.index0 %}
+            <div class="formula-mix" data-index="{{ i }}">
+                <div class="mix-header">
+                    <h3 class="mix-label">Formulation {{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[i] }}</h3>
+                    <button type="button" class="remove-mix" {% if mixes|length <= 1 %}style="display:none;"{% endif %}>Remove</button>
+                </div>
+
+                <label>Color House &amp; Series
+                    <input type="text" name="mix_{{ i }}_color_house_series" value="{{ mix['color_house_series'] if mix else '' }}" placeholder="e.g. Wella Koleston">
+                </label>
+
+                <fieldset>
+                    <legend>Classification</legend>
+                    <div class="pill-group">
+                        <label><input type="checkbox" name="mix_{{ i }}_is_lightener" {% if mix and mix['is_lightener'] %}checked{% endif %}> Lightener</label>
+                        <label><input type="checkbox" name="mix_{{ i }}_is_permanent" {% if mix and mix['is_permanent'] %}checked{% endif %}> Permanent</label>
+                        <label><input type="checkbox" name="mix_{{ i }}_is_demi_permanent" {% if mix and mix['is_demi_permanent'] %}checked{% endif %}> Demi-Permanent</label>
+                        <label><input type="checkbox" name="mix_{{ i }}_is_deposit_only" {% if mix and mix['is_deposit_only'] %}checked{% endif %}> Deposit Only</label>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Developer</legend>
+                    <div class="pill-group">
+                        {% for vol in [5, 10, 15, 20, 25, 30, 40] %}
+                        <label><input type="checkbox" name="mix_{{ i }}_dev_{{ vol }}" {% if mix and mix['dev_' ~ vol] %}checked{% endif %}> {{ vol }}</label>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+
+                <label>Formula
+                    <textarea name="mix_{{ i }}_mix_details">{{ mix['mix_details'] if mix else '' }}</textarea>
+                </label>
+
+                <label>Development Time
+                    <input type="text" name="mix_{{ i }}_development_time" value="{{ mix['development_time'] if mix else '' }}">
+                </label>
             </div>
+            {% endfor %}
 
-            <label>Color House &amp; Series
-                <input type="text" name="mix_{{ i }}_color_house_series" value="{{ mix['color_house_series'] if mix else '' }}" placeholder="e.g. Wella Koleston">
-            </label>
-
-            <fieldset>
-                <legend>Classification</legend>
-                <div class="pill-group">
-                    <label><input type="checkbox" name="mix_{{ i }}_is_lightener" {% if mix and mix['is_lightener'] %}checked{% endif %}> Lightener</label>
-                    <label><input type="checkbox" name="mix_{{ i }}_is_permanent" {% if mix and mix['is_permanent'] %}checked{% endif %}> Permanent</label>
-                    <label><input type="checkbox" name="mix_{{ i }}_is_demi_permanent" {% if mix and mix['is_demi_permanent'] %}checked{% endif %}> Demi-Permanent</label>
-                    <label><input type="checkbox" name="mix_{{ i }}_is_deposit_only" {% if mix and mix['is_deposit_only'] %}checked{% endif %}> Deposit Only</label>
+        {% else %}
+            <!-- New formula: render one blank mix box so the form is usable
+                 immediately without having to click "+ Add Formulation" first. -->
+            <div class="formula-mix" data-index="0">
+                <div class="mix-header">
+                    <h3 class="mix-label">Formulation A</h3>
+                    <button type="button" class="remove-mix" style="display:none;">Remove</button>
                 </div>
-            </fieldset>
 
-            <fieldset>
-                <legend>Developer</legend>
-                <div class="pill-group">
-                    {% for vol in [5, 10, 15, 20, 25, 30, 40] %}
-                    <label><input type="checkbox" name="mix_{{ i }}_dev_{{ vol }}" {% if mix and mix['dev_' ~ vol] %}checked{% endif %}> {{ vol }}</label>
-                    {% endfor %}
-                </div>
-            </fieldset>
+                <label>Color House &amp; Series
+                    <input type="text" name="mix_0_color_house_series" value="" placeholder="e.g. Wella Koleston">
+                </label>
 
-            <label>Formula
-                <textarea name="mix_{{ i }}_mix_details">{{ mix['mix_details'] if mix else '' }}</textarea>
-            </label>
+                <fieldset>
+                    <legend>Classification</legend>
+                    <div class="pill-group">
+                        <label><input type="checkbox" name="mix_0_is_lightener"> Lightener</label>
+                        <label><input type="checkbox" name="mix_0_is_permanent"> Permanent</label>
+                        <label><input type="checkbox" name="mix_0_is_demi_permanent"> Demi-Permanent</label>
+                        <label><input type="checkbox" name="mix_0_is_deposit_only"> Deposit Only</label>
+                    </div>
+                </fieldset>
 
-            <label>Development Time
-                <input type="text" name="mix_{{ i }}_development_time" value="{{ mix['development_time'] if mix else '' }}">
-            </label>
-        </div>
-        {% endfor %}
+                <fieldset>
+                    <legend>Developer</legend>
+                    <div class="pill-group">
+                        <label><input type="checkbox" name="mix_0_dev_5"> 5</label>
+                        <label><input type="checkbox" name="mix_0_dev_10"> 10</label>
+                        <label><input type="checkbox" name="mix_0_dev_15"> 15</label>
+                        <label><input type="checkbox" name="mix_0_dev_20"> 20</label>
+                        <label><input type="checkbox" name="mix_0_dev_25"> 25</label>
+                        <label><input type="checkbox" name="mix_0_dev_30"> 30</label>
+                        <label><input type="checkbox" name="mix_0_dev_40"> 40</label>
+                    </div>
+                </fieldset>
+
+                <label>Formula
+                    <textarea name="mix_0_mix_details"></textarea>
+                </label>
+
+                <label>Development Time
+                    <input type="text" name="mix_0_development_time" value="">
+                </label>
+            </div>
+        {% endif %}
+
     </div>
 
     <input type="hidden" id="mix-indices" name="mix_indices"
-           value="{% for mix in mixes %}{{ loop.index0 }}{% if not loop.last %},{% endif %}{% endfor %}">
+           value="{% if mixes %}{% for mix in mixes %}{{ loop.index0 }}{% if not loop.last %},{% endif %}{% endfor %}{% else %}0{% endif %}">
 
     <button type="button" id="add-mix" class="secondary-button">+ Add Formulation</button>
 

@@ -1,46 +1,25 @@
 {% extends 'base.html' %}
 {% block title %}{{ client['name'] }}{% endblock %}
 {% block content %}
-<h1>{{ client['name'] }}</h1>
+
+<div class="page-header">
+    <a href="{{ url_for('index') }}" class="back-link">&larr; Clients</a>
+    <h1>{{ client['name'] }}</h1>
+</div>
+
 <div class="card">
     <p>{{ client['phone'] }} &middot; {{ client['email'] }}</p>
     <p>{{ client['address'] }}</p>
     <p>Birthday: {{ client['birthday'] }}</p>
     <p>Availability notes: {{ client['availability_notes'] }}</p>
-    <a href="{{ url_for('client_edit', client_id=client['id']) }}">Edit client info</a>
+    <div class="profile-actions">
+        <a href="{{ url_for('client_edit', client_id=client['id']) }}">Edit client info</a>
+        <a href="{{ url_for('client_formulas', client_id=client['id']) }}" class="profile-formulas-link">
+            Formulations
+            {% if formula_count > 0 %}({{ formula_count }}){% endif %}
+            &rarr;
+        </a>
+    </div>
 </div>
 
-<h2>Upcoming Appointments</h2>
-<a href="{{ url_for('appointment_new', client_id=client['id']) }}">+ New Appointment</a>
-<div class="card">
-    <ul>
-        {% for appt in appointments %}
-        <li>
-            {{ appt['date'] }} at {{ appt['start_time'] }}
-            {% if appt['notes'] %} &mdash; {{ appt['notes'] }}{% endif %}
-            &mdash; <a href="{{ url_for('appointment_edit', appointment_id=appt['id']) }}">edit</a>
-        </li>
-        {% else %}
-        <li>No upcoming appointments.</li>
-        {% endfor %}
-    </ul>
-</div>
-
-<h2>Formulation History</h2>
-<a href="{{ url_for('formula_new', client_id=client['id']) }}">+ New Formulation</a>
-<div class="card">
-    <ul>
-        {% for formula in formulas %}
-        <li>
-            <strong>{{ formula['created_date'] }}</strong>
-            {% if formula['last_edited_date'] != formula['created_date'] %}
-                (edited {{ formula['last_edited_date'] }})
-            {% endif %}
-            &mdash; <a href="{{ url_for('formula_edit', formula_id=formula['id']) }}">view / edit</a>
-        </li>
-        {% else %}
-        <li>No formulas recorded yet.</li>
-        {% endfor %}
-    </ul>
-</div>
 {% endblock %}

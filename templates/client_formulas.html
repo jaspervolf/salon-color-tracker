@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}{{ client['name'] }} — Formulations{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <a href="{{ url_for('client_profile', client_id=client['id']) }}" class="back-link">&larr; {{ client['name'] }}</a>
+    <h1>{{ client['name'] }}</h1>
+</div>
+
+<div class="cf-actions">
+    <a href="{{ url_for('formula_new', client_id=client['id'], back=url_for('client_formulas', client_id=client['id'])) }}">+ New Formulation</a>
+</div>
+
+{% if latest %}
+
+<!-- Most recent formula - rendered in full, read-only -->
+<div class="cf-latest-header">
+    <h2>Most Recent &mdash; {{ latest['created_date'] }}</h2>
+    <a href="{{ url_for('formula_edit', formula_id=latest['id'], back=url_for('client_formulas', client_id=client['id'])) }}">Edit</a>
+</div>
+
+<div class="card cf-latest">
+
+    {% if latest['consultation_notes'] %}
+    <div class="cf-section">
+        <h3>Consultation Notes</h3>
+        <p>{{ latest['consultation_notes'] }}</p>
+    </div>
+    {% endif %}
+
+    {% for mix in latest_mixes %}
+    {% set i = loop.index0 %}
+    <div class="cf-mix">
+        <h3>Formulation {{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[i] }}</h3>
+
+        {% if mix['color_house_series'] %}
+        <p class="cf-mix-house">{{ mix['color_house_series'] }}</p>
+        {% endif %}
+
+        {% set types = [] %}
+        {% if mix['is_lightener'] %}{% set _ = types.append('Lightener') %}{% endif %}
+        {% if mix['is_permanent'] %}{% set _ = types.append('Permanent') %}{% endif %}
+        {% if mix['is_demi_permanent'] %}{% set _ = types.append('Demi-Permanent') %}{% endif %}
+        {% if mix['is_deposit_only'] %}{% set _ = types.append('Deposit Only') %}{% endif %}
+        {% if types %}
+        <div class="pill-group cf-pills">
+            {% for t in types %}<span class="cf-pill">{{ t }}</span>{% endfor %}
+        </div>
+        {% endif %}
+
+        {% set vols = [] %}
+        {% for vol in [5, 10, 15, 20, 25, 30, 40] %}
+            {% if mix['dev_' ~ vol] %}{% set _ = vols.append(vol ~ 'vol') %}{% endif %}
+        {% endfor %}
+        {% if vols %}
+        <div class="pill-group cf-pills">
+            {% for v in vols %}<span class="cf-pill cf-pill-dev">{{ v }}</span>{% endfor %}
+        </div>
+        {% endif %}
+
+        {% if mix['mix_details'] %}
+        <div class="cf-section">
+            <h4>Formula</h4>
+            <p>{{ mix['mix_details'] }}</p>
+        </div>
+        {% endif %}
+
+        {% if mix['development_time'] %}
+        <p class="cf-dev-time">Development time: {{ mix['development_time'] }}</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    {% if latest['results_notes'] %}
+    <div class="cf-section cf-results">
+        <h3>Visual Outcome</h3>
+        <p>{{ latest['results_notes'] }}</p>
+    </div>
+    {% endif %}
+
+</div>
+
+{% if older %}
+<h2 class="cf-history-heading">Previous Formulations</h2>
+<div class="card">
+    <ul>
+        {% for formula in older %}
+        <li>
+            <a href="{{ url_for('formula_edit', formula_id=formula['id'], back=url_for('client_formulas', client_id=client['id'])) }}">
+                {{ formula['created_date'] }}
+            </a>
+            {% if formula['last_edited_date'] != formula['created_date'] %}
+                <span class="formula-list-edited">(edited {{ formula['last_edited_date'] }})</span>
+            {% endif %}
+            {% if formula['consultation_notes'] %}
+                &mdash; <span class="cf-history-preview">{{ formula['consultation_notes']|truncate(60) }}</span>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+{% else %}
+<div class="card">
+    <p class="cf-empty">No formulations recorded yet. <a href="{{ url_for('formula_new', client_id=client['id'], back=url_for('client_formulas', client_id=client['id'])) }}">Add the first one.</a></p>
+</div>
+{% endif %}
+
+{% endblock %}

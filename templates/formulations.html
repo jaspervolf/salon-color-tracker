@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Formulations{% endblock %}
+{% block content %}
+
+<h1>Formulations</h1>
+
+<div class="card">
+    <input type="text" id="formulations-search" placeholder="Search by client or date..." aria-label="Search formulations" autocomplete="off">
+    <ul id="formulations-list">
+        {% for formula in formulas %}
+        <li class="formula-list-item"
+            data-search="{{ formula['client_name']|lower }} {{ formula['created_date'] }} {{ formula['consultation_notes']|lower if formula['consultation_notes'] else '' }}">
+            <div class="formula-list-main">
+                <span class="formula-list-date">{{ formula['created_date'] }}</span>
+                {% if formula['last_edited_date'] != formula['created_date'] %}
+                    <span class="formula-list-edited">(edited {{ formula['last_edited_date'] }})</span>
+                {% endif %}
+            </div>
+            <div class="formula-list-client">
+                <a href="{{ url_for('client_formulas', client_id=formula['client_id']) }}">{{ formula['client_name'] }}</a>
+            </div>
+            {% if formula['consultation_notes'] %}
+            <div class="formula-list-preview">{{ formula['consultation_notes']|truncate(80) }}</div>
+            {% endif %}
+        </li>
+        {% else %}
+        <li>No formulations recorded yet.</li>
+        {% endfor %}
+    </ul>
+    <p id="formulations-no-results" style="display:none;">No matching formulations.</p>
+</div>
+
+{% endblock %}

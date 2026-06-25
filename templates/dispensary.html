@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Dispensary — Gnuance{% endblock %}
+
+{% block content %}
+<span class="dispensary-print-title">Gnuance — Dispensary List</span>
+
+<div class="dispensary-header">
+    <h1>Dispensary</h1>
+    <div class="dispensary-actions">
+        {# Email: build the list body inline so mailto opens pre-composed #}
+        {% if items %}
+        <a class="button secondary-button"
+           href="mailto:?subject=Dispensary%20List&body={% for item in items %}{% if item.quantity or item.unit %}{{ item.quantity or '' }}%20{{ item.unit or '' }}%20{% endif %}{{ item.name | urlencode }}{% if item.notes %}%20%E2%80%94%20{{ item.notes | urlencode }}{% endif %}%0A{% endfor %}">
+            Email List
+        </a>
+        <button class="secondary-button" onclick="window.print()">Print List</button>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add item form -->
+<div class="dispensary-add-form">
+    <h2>Add to list</h2>
+    <form method="POST" action="{{ url_for('dispensary_add') }}">
+        <div class="dispensary-add-row">
+            <div class="field-name">
+                <label for="name">Product</label>
+                <input type="text" id="name" name="name" placeholder="e.g. Wella Koleston 7/0" required autofocus>
+            </div>
+            <div class="field-qty">
+                <label for="quantity">Qty</label>
+                <input type="text" id="quantity" name="quantity" placeholder="2">
+            </div>
+            <div class="field-unit">
+                <label for="unit">Unit</label>
+                <input type="text" id="unit" name="unit" placeholder="tubes">
+            </div>
+            <div class="field-notes">
+                <label for="notes">Notes</label>
+                <input type="text" id="notes" name="notes" placeholder="optional">
+            </div>
+            <button type="submit">Add</button>
+        </div>
+    </form>
+</div>
+
+<!-- The list -->
+<div class="dispensary-list">
+    {% if items %}
+        {% for item in items %}
+        <div class="dispensary-item">
+            <div class="dispensary-item-info">
+                <div class="dispensary-item-name">{{ item.name }}</div>
+                {% set meta_parts = [] %}
+                {% if item.quantity or item.unit %}
+                    {% set qty_str = (item.quantity ~ ' ' ~ (item.unit or '')) | trim %}
+                    {% set _ = meta_parts.append(qty_str) %}
+                {% endif %}
+                {% if item.notes %}
+                    {% set _ = meta_parts.append(item.notes) %}
+                {% endif %}
+                {% if meta_parts %}
+                <div class="dispensary-item-meta">{{ meta_parts | join(' — ') }}</div>
+                {% endif %}
+            </div>
+            <div class="dispensary-item-controls">
+                <form method="POST" action="{{ url_for('dispensary_purchased', item_id=item.id) }}" class="inline-form">
+                    <button type="submit" class="secondary-button" title="Mark as purchased">✓ Got it</button>
+                </form>
+                <form method="POST" action="{{ url_for('dispensary_delete', item_id=item.id) }}" class="inline-form">
+                    <button type="submit" class="secondary-button remove-mix" title="Remove from list"
+                            onclick="return confirm('Remove {{ item.name }} from the list?')">✕</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="dispensary-empty">List is empty — add something above.</div>
+    {% endif %}
+</div>
+{% endblock %}

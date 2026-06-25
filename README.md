@@ -11,7 +11,8 @@ GNU Project: free as in freedom, not free as in beer.
 ## What's here
 
 - `app.py` — Flask backend (routes, database queries)
-- `schema.sql` — database structure (clients, formulas, formula mixes)
+- `schema.sql` — database structure (clients, appointments, formulas,
+  formula mixes)
 - `templates/` — HTML pages
 - `static/style.css` — styling
 - `static/app.js` — font toggle, phone formatting, client search,
@@ -62,10 +63,15 @@ GNUANCE_DEBUG=1 python3 app.py
 |---|---|
 | `/` | List of all clients, with search |
 | `/clients/new` | Add a new client |
-| `/clients/<id>` | View one client + their formulation history |
+| `/clients/<id>` | View one client + their formulation history and upcoming appointments |
 | `/clients/<id>/edit` | Edit client info |
 | `/clients/<id>/formulas/new` | Add a new formulation entry for that client |
 | `/formulas/<id>/edit` | View/edit one formulation entry |
+| `/schedule` | Today's appointments |
+| `/schedule/<date>` | Appointments for a specific day (`YYYY-MM-DD`), with prev/next-day navigation |
+| `/appointments/new` | Add a new appointment |
+| `/appointments/<id>/edit` | Edit an appointment |
+| `/appointments/<id>/delete` | Delete an appointment (POST only, used by the Delete button on the schedule) |
 
 ## Running automatically on boot (kiosk mode)
 
@@ -127,10 +133,23 @@ interface simple rather than an oversight: `created_date` and
 *that* something changed and *when*, even though the prior version isn't
 kept around.
 
+Appointments follow the same philosophy: there's no status field for
+scheduled/cancelled/no-show. If an appointment doesn't happen, you edit
+or delete it. The schedule's "Log visit" link creates a new formulation
+already linked back to that appointment, so once it's logged the
+schedule shows "View logged visit" in its place instead. New and edited
+appointments are checked against everything else already on the books
+for that day and blocked if the times overlap — back-to-back
+appointments (one ending exactly when the next starts) are allowed.
+
+This is built for one stylist's own schedule rather than a multi-chair
+salon — there's no concept of which stylist an appointment belongs to,
+since every record in the database already belongs to whoever is running
+the app. Multiple of your own devices can already reach the same live
+schedule over your local network (e.g. checking it from your phone)
+without any extra setup, since Flask already serves the whole network,
+not just the kiosk Pi itself.
+
 ## What's next
 
 - A simple one-page site at gnuance.com introducing the project
-- A scheduling module, kept separate from the formula tracker once this
-  is solid in daily use — SQLite works well for a single station, but a
-  shared schedule across multiple stations would need a different
-  approach

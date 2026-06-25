@@ -4,9 +4,9 @@
 <h1>Schedule</h1>
 
 <div class="schedule-nav">
-    <a href="{{ url_for('schedule', date_str=prev_day) }}">&larr; Previous day</a>
+    <a href="{{ url_for('schedule', date_str=prev_date) }}">&larr; Previous day</a>
     <span>{{ display_date }}</span>
-    <a href="{{ url_for('schedule', date_str=next_day) }}">Next day &rarr;</a>
+    <a href="{{ url_for('schedule', date_str=next_date) }}">Next day &rarr;</a>
 </div>
 
 <a href="{{ url_for('appointment_new', date=date_str) }}">+ New Appointment</a>
@@ -19,10 +19,10 @@
             <a href="{{ url_for('client_profile', client_id=appt['client_id']) }}">{{ appt['client_name'] }}</a>
             {% if appt['notes'] %} &mdash; {{ appt['notes'] }}{% endif %}
             <br>
-            {% if appt['formula_id'] %}
-                <a href="{{ url_for('formula_edit', formula_id=appt['formula_id']) }}">View logged visit</a>
+            {% if appt['id'] in logged_formula_ids %}
+                <a href="{{ url_for('formula_edit', formula_id=logged_formula_ids[appt['id']], back=url_for('schedule', date_str=date_str)) }}">View logged visit</a>
             {% else %}
-                <a href="{{ url_for('formula_new', client_id=appt['client_id'], appointment_id=appt['id']) }}">Log visit</a>
+                <a href="{{ url_for('formula_new', client_id=appt['client_id'], appointment_id=appt['id'], back=url_for('schedule', date_str=date_str)) }}">Log visit</a>
             {% endif %}
             &mdash;
             <a href="{{ url_for('appointment_edit', appointment_id=appt['id']) }}">Edit</a>

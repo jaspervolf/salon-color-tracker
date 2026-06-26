@@ -259,8 +259,8 @@ def formula_new(client_id):
              request.form.get('results_notes', ''))
         ).lastrowid
 
-        mix_names = request.form.getlist('mix_name')
-        for i, mix_name in enumerate(mix_names):
+        mix_indices = [int(x) for x in request.form.get('mix_indices', '0').split(',') if x.strip()]
+        for i in mix_indices:
             db.execute(
                 '''INSERT INTO formula_mixes
                    (formula_id, sort_order,
@@ -322,8 +322,8 @@ def formula_edit(formula_id):
 
         db.execute('DELETE FROM formula_mixes WHERE formula_id = ?', (formula_id,))
 
-        mix_names = request.form.getlist('mix_name')
-        for i, mix_name in enumerate(mix_names):
+        mix_indices = [int(x) for x in request.form.get('mix_indices', '0').split(',') if x.strip()]
+        for i in mix_indices:
             db.execute(
                 '''INSERT INTO formula_mixes
                    (formula_id, sort_order,
